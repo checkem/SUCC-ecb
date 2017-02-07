@@ -1,0 +1,7 @@
+## Interface: 11200
+## Author: checkem
+## Title: SUCC-ecb
+## Notes: Why sip if you can S U C C?(and have an enemy castbar)
+
+table.lua
+SUCC-ecb.lua
