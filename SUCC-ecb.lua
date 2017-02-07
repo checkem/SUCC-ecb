@@ -2,6 +2,11 @@
     local BACKDROP = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
     local u = CreateFrame'Frame'
 
+    RegisterCVar('width', 200)
+    RegisterCVar('height', 10)
+    RegisterCVar('x', 0)
+    RegisterCVar('y', 0)
+
     local Cast = {}
     local casts = {}
     local Heal = {}

@@ -2,10 +2,6 @@
 -- append to target
 -- borders
 -- colors
-    RegisterCVar('width', 200)
-    RegisterCVar('height', 10)
-    RegisterCVar('x', 0)
-    RegisterCVar('y', 0)
     -- RegisterCVar('border', nil)
     -- RegisterCVar('color', nil)
 
