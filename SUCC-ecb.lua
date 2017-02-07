@@ -16,12 +16,12 @@
          return math.floor(n*shift + .5)/shift
      end
 
-    local parent = CreateFrame('Frame', 'SUCC-ecb', UIParent)
-    parent:SetWidth(200)
-    parent:SetHeight(10)
-    parent:SetPoint('CENTER', UIParent, 'CENTER', 0, 0)
-    parent:SetMovable(true)
-    parent:EnableMouse(true)
+    local parent = CreateFrame('Frame', 'SUCC_ecb', UIParent)
+    parent:SetWidth(GetCVar('width') or 200)
+    parent:SetHeight(GetCVar('height') or 10)
+    parent:SetPoint('CENTER', UIParent, 'CENTER', GetCVar('x') or 0, GetCVar('y') or 0)
+    -- parent:SetMovable(true)
+    -- parent:EnableMouse(true)
     parent:RegisterForDrag'LeftButton'
     parent:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],
 							 insets = {left = -1, right = -1, top = -1, bottom = -1}})
@@ -75,6 +75,14 @@
     local showCast = function()
         local target = GetUnitName'target'
         TargetFrame.cast:Hide()
+		if getglobal('SUCC_ecbOptions'):IsShown() == 1 then
+				TargetFrame.cast:Show()
+				TargetFrame.cast:SetMinMaxValues(0, 1)
+				TargetFrame.cast:SetValue(1)
+				TargetFrame.cast.text:SetText'Frostbolt'
+				TargetFrame.cast.timer:SetText'0s'
+				TargetFrame.cast.icon:SetTexture[[Interface\ICONS\spell_frost_frostbolt02]]
+		end
         if target ~= nil then   -- or cv == 1
             local v = PROCESSCASTINGgetCast(target)
             if v ~= nil then

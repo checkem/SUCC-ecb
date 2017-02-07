@@ -2,6 +2,8 @@
 ## Author: checkem
 ## Title: SUCC-ecb
 ## Notes: Why sip if you can S U C C?(and have an enemy castbar)
+##SavedVariablesPerCharacter: width, height, x, y
 
 table.lua
 SUCC-ecb.lua
+options.lua
