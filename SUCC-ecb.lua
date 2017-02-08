@@ -1,4 +1,3 @@
-    local TEXTURE = [[Interface\AddOns\SUCC-ecb\sb.tga]]
     local BACKDROP = {bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],}
     local u = CreateFrame'Frame'
 
@@ -6,6 +5,10 @@
     RegisterCVar('height', 10)
     RegisterCVar('x', 0)
     RegisterCVar('y', 0)
+    RegisterCVar('icon', 1, false)
+    RegisterCVar('iconPos', 0)
+    RegisterCVar('namePos', 0)
+    RegisterCVar('timePos', 1)
 
     local Cast = {}
     local casts = {}
@@ -25,14 +28,27 @@
     parent:SetWidth(GetCVar('width') or 200)
     parent:SetHeight(GetCVar('height') or 10)
     parent:SetPoint('CENTER', UIParent, 'CENTER', GetCVar('x') or 0, GetCVar('y') or 0)
-    -- parent:SetMovable(true)
-    -- parent:EnableMouse(true)
+    parent:SetMovable(true)
+	parent:EnableMouse(false)
     parent:RegisterForDrag'LeftButton'
     parent:SetBackdrop({bgFile = [[Interface\Tooltips\UI-Tooltip-Background]],
 							 insets = {left = -1, right = -1, top = -1, bottom = -1}})
     parent:SetBackdropColor(0, 0, 0, 0)
+    parent:SetScript('OnDragStart', function() parent:StartMoving() end)
+    parent:SetScript('OnDragStop', function()
+		parent:StopMovingOrSizing()
+		parent:SetUserPlaced(false)
+		local tcx, tcy = parent:GetCenter()
+		local uix, uiy = UIParent:GetCenter()
+		local fix, fiy = tcx - uix, tcy - uiy
+		SetCVar('x', fix)
+		SetCVar('y', fiy)
+		xCoord:SetText(fix)
+		yCoord:SetText(fiy)
+	end)
+
     TargetFrame.cast = CreateFrame('StatusBar', nil, parent)
-    TargetFrame.cast:SetStatusBarTexture(TEXTURE)
+    TargetFrame.cast:SetStatusBarTexture('Interface\\TargetingFrame\\UI-StatusBar')
     TargetFrame.cast:SetStatusBarColor(1, .4, 0)
     TargetFrame.cast:SetBackdrop(BACKDROP)
     TargetFrame.cast:SetBackdropColor(0, 0, 0)
@@ -46,18 +62,36 @@
     TargetFrame.cast.text:SetShadowOffset(1, -1)
     TargetFrame.cast.text:SetShadowColor(0, 0, 0)
     TargetFrame.cast.text:SetPoint('TOPLEFT', TargetFrame.cast, 'BOTTOMLEFT', 2, -5)
+	if GetCVar('namePos') == '0' then
+    	TargetFrame.cast.text:SetPoint('TOPLEFT', TargetFrame.cast, 'BOTTOMLEFT', 2, -5)
+	elseif GetCVar('namePos') == '1' then
+		TargetFrame.cast.text:SetPoint('LEFT', TargetFrame.cast, 2, 0)
+	else
+		TargetFrame.cast.text:SetPoint('BOTTOMLEFT', TargetFrame.cast, 'TOPLEFT', 2, 5)
+	end
 
     TargetFrame.cast.timer = TargetFrame.cast:CreateFontString(nil, 'OVERLAY')
     TargetFrame.cast.timer:SetTextColor(1, 1, 1)
     TargetFrame.cast.timer:SetFont(STANDARD_TEXT_FONT, 9)
     TargetFrame.cast.timer:SetShadowOffset(1, -1)
     TargetFrame.cast.timer:SetShadowColor(0, 0, 0)
-    TargetFrame.cast.timer:SetPoint('RIGHT', TargetFrame.cast, -1, 1)
+	if GetCVar('timePos') == '0' then
+		TargetFrame.cast.timer:SetPoint('TOPRIGHT', TargetFrame.cast, 'BOTTOMRIGHT', -1, -5)
+	elseif GetCVar('timePos') == '1' then
+    	TargetFrame.cast.timer:SetPoint('RIGHT', TargetFrame.cast, -1, 1)
+	else
+		TargetFrame.cast.timer:SetPoint('BOTTOMRIGHT', TargetFrame.cast, 'TOPRIGHT', -1, 5)
+	end
 
     TargetFrame.cast.icon = TargetFrame.cast:CreateTexture(nil, 'OVERLAY', nil, 7)
     TargetFrame.cast.icon:SetWidth(18) TargetFrame.cast.icon:SetHeight(18)
-    TargetFrame.cast.icon:SetPoint('RIGHT', TargetFrame.cast, 'LEFT', -8, 0)
+	if GetCVar('iconPos') == '1' then
+		TargetFrame.cast.icon:SetPoint('LEFT', TargetFrame.cast, 'RIGHT', 8, 0)
+	else
+    	TargetFrame.cast.icon:SetPoint('RIGHT', TargetFrame.cast, 'LEFT', -8, 0)
+	end
     TargetFrame.cast.icon:SetTexCoord(.1, .9, .1, .9)
+	if GetCVar('icon') ~= '1' then TargetFrame.cast.icon:Hide() end
 
     local ic = CreateFrame('Frame', nil, TargetFrame.cast)
     ic:SetAllPoints(TargetFrame.cast.icon)
@@ -101,8 +135,8 @@
 
                     TargetFrame.cast.text:SetText(v.spell)
                     TargetFrame.cast.timer:SetText(getTimerLeft(v.timeEnd)..'s')
-                    TargetFrame.cast.icon:SetTexture(v.icon)
-                    TargetFrame.cast:Show()
+					TargetFrame.cast.icon:SetTexture(v.icon)
+					TargetFrame.cast:Show()
                 end
             end
         end
@@ -529,4 +563,3 @@
 			tableMaintenance(true)
         else handleCast() handleHeal() end
     end)
-    --
